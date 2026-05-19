@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise de Campanhas</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card, .panel {
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #334155;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      color: #93c5fd;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Análise de Campanhas</h1>
+    <div class="grid" id="cards"></div>
+
+    <div class="panel" style="margin-top:16px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th>Cliques</th>
+            <th>Conversões</th>
+            <th>Taxa</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      { campanha: 'Google Ads', cliques: 1200, conversoes: 96 },
+      { campanha: 'Instagram', cliques: 980, conversoes: 70 },
+      { campanha: 'LinkedIn', cliques: 430, conversoes: 34 },
+      { campanha: 'Email', cliques: 760, conversoes: 88 }
+    ];
+
+    const totalCliques = data.reduce((a, b) => a + b.cliques, 0);
+    const totalConversoes = data.reduce((a, b) => a + b.conversoes, 0);
+    const taxaGeral = ((totalConversoes / totalCliques) * 100).toFixed(2) + '%';
+
+    const melhor = data
+      .map(item => ({ ...item, taxa: item.conversoes / item.cliques }))
+      .sort((a, b) => b.taxa - a.taxa)[0];
+
+    const cards = [
+      ['Total de Cliques', totalCliques],
+      ['Total de Conversões', totalConversoes],
+      ['Taxa Geral', taxaGeral],
+      ['Melhor Canal', melhor.campanha]
+    ];
+
+    document.getElementById('cards').innerHTML = cards
+      .map(([titulo, valor]) => `
+        <div class="card">
+          <h3>${titulo}</h3>
+          <p>${valor}</p>
+        </div>
+      `)
+      .join('');
+
+    document.getElementById('tbody').innerHTML = data
+      .map(item => {
+        const taxa = ((item.conversoes / item.cliques) * 100).toFixed(2) + '%';
+        return `
+          <tr>
+            <td>${item.campanha}</td>
+            <td>${item.cliques}</td>
+            <td>${item.conversoes}</td>
+            <td>${taxa}</td>
+          </tr>
+        `;
+      })
+      .join('');
+  </script>
+</body>
+</html>
